@@ -1,5 +1,341 @@
 ---
-title: "DLSM"
+title: "Introducing a General Framework for Locally Weighted Spatial Modelling Based on Density Regression"
 author: "Yigong Hu"
 date: "2023-03-22"
 ---
+
+In this document, I'm going to show codes of simulation experiments and their results demonstrated in the short paper
+*Introducing a General Framework for Locally Weighted Spatial Modelling Based on Density Regression*.
+This paper mainly talks about a density-based local spatial modelling (DLSM) method,
+which was originally named as "geographically weighted density regression (GWDR)".
+In the following parts, we don't distinguish these two terms.
+
+In addition to show reproducable code of experiments shown in the paper,
+We are going to describe a bit how to install and use this model.
+
+# Installation
+
+The R implementation of GWDR is in the unpublished [`feature-gctwr` branch](https://github.com/GWmodel-Lab/GWmodel2/tree/feature-gctwr)
+of package [**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html).
+To use it, please clone this repositry, switch to this branch, and install this package manually.
+
+```bash
+git clone https://github.com/GWmodel-Lab/GWmodel2.git GWmodel
+cd GWmodel
+git switch feature-gctwr
+R CMD INSTALL GWmodel
+```
+
+::: {.callout-warning}
+Please install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) if you are using Windows platforms.
+:::
+
+When all packages are ready, please go on to the next section.
+
+# Usage
+
+The function `gwdr()` can calibrate a DLSM model according to given formula, data, and other settings.
+
+```r
+gwdr <- function(
+    formula, data,
+    coords, kernel.list, solver = "kernel.smooth", ...
+) { ... }
+```
+
+It accepts several parameters.
+Besides the `formula` and `data` arguments that are constant with other regression models in R,
+three additional key arguments are needed: 
+
+`coords`
+: Coordinates to uniquely locate every sample.
+Coordinates may not only geographical positions, but also positions in other dimensions.
+For example, coordinates of spatio-temporal data are geographical positions and the timestamp;
+and coordinates of flow data can consist of the geographical positions of origin points, flows' directions, and flows' length.
+
+`kernel.list`
+: A list of kernel settings for every dimension.
+Each item is a full specification of kernel function (including bandwidth) for a dimension, i.e., a column in `coords`.
+It usually has three elements in each item: bandwidth value, kernel name, and adaptive or fixed.
+There is a function `gwdr.make.kernel()` that would be helpful in creating elements in `kernel.list`.
+
+`solver`
+: The name of favored density estimation method.
+By default, its `"kernel.smooth"` referring the kernel smooth estimation.
+This estimation method is the same as ordinary GWR-family models, like basic GWR and GTWR.
+Currently, there is another option `"local.poly"` for local polynomial estimation.
+This method is better at eliminating boundary effects to produce more accurate estimates in the area near to boundaries.
+The additional parameter `...` will be passed to the corresponding solver function.
+
+The bandwidth values in `kernel.list` would significantly affect results.
+If best values are unknow, there is a function `gwdr.bandwidth.optimize()` to obtain the optimized bandwidth values.
+
+```r
+gwdr.bandwidth.optimize <- function(
+    formula, data, coords, kernel.list,
+    optimize.method = gwdr.bandwidth.optimize.cv,
+    solver = "kernel.smooth", ...
+) { ... }
+```
+
+The former four arguments and `solver` are the same as those in `gwdr()`.
+The argument `optimize.method` is used to specify optimization criterion,
+i.e., Cross Validation (CV) or Akaike Information Criterion (AIC).
+The former one is quicker while the latter one could avoid overfitting.
+Note that the underlying algorithm is the Nelder-Meed algorithm, which requires initial values of bandwidths.
+Usually, $0.618$ is good for adaptive bandwidths.
+
+# Experiments
+
+In the following codes, the following packages are also required:
+
+- [**tidyverse**](https://cran.r-project.org/web/packages/tidyverse/index.html)
+- [**ggpmisc**](https://cran.r-project.org/web/packages/ggpmisc/index.html)
+
+Please install and load them too.
+
+```{r}
+#| message: false
+#| warning: false
+library(GWmodel)
+library(tidyverse)
+library(ggpmisc)
+```
+
+We carried out three experiments, generating simulation data sets to demonstrate how DLSM works.
+We also calibrated a corresponding GWR-family model in each experiment to provide a comparison.
+In the experiments, based on the coefficient estimates we examine the proximity to their actual values
+by making scatter plot with regression lines and calculate their RMSE and MAE criterions defined by
+$$
+\begin{aligned}
+\mathrm{RMSE} &= \sum_{i=1}^n \left(r_1-e_i\right)^2 \\
+\mathrm{MAE} &= \sum_{i=1}^n \left|r_1-e_i\right|
+\end{aligned}
+$$
+where $n$ is the number of estimates, $e_i$ is the $i$-th estimate, and $r_i$ is the corresponding real value.
+
+## Two-dimensional Data
+
+### Data Generating
+
+Data of two dimensions (equalivent to normal geographic data) are generated by the following codes.
+
+```{r d2-datagen}
+generate_data_d2 <- function (size) {
+  set.seed(11)
+  U1 <- rnorm(n = size, mean = 3000, sd = 100)
+  set.seed(12)
+  U2 <- rnorm(n = size, mean = 3000, sd = 100)
+  set.seed(21)
+  x1 <- rnorm(n = size, mean = 0, sd = 1)
+  set.seed(22)
+  x2 <- rnorm(n = size, mean = 0, sd = 1)
+  set.seed(23)
+  x3 <- rnorm(n = size, mean = 0, sd = 1)
+  U1c <- (U1 - 3000) / 100
+  U2c <- (U2 - 3000) / 100
+  b0 <- U1c + U2c^2
+  b1 <- U1c + U2c^2 + 10
+  b2 <- U1c + (U2c - 1)^2
+  b3 <- U1c + U2c^2 + 2 * U2c
+  set.seed(1)
+  y <- b0 + b1 * x1 + b2 * x2 + b3 * x3 + rnorm(n = size, mean = 0, sd = 1)
+  list(
+    data = data.frame(y = y, x1 = x1, x2 = x2, x3 = x3),
+    coords = cbind(U1 = U1, U2 = U2),
+    beta = data.frame(Intercept = b0, x1 = b1, x2 = b2, x3 = b3)
+  )
+}
+data_d2 <- generate_data_d2(5000)
+glimpse(data_d2)
+```
+
+Then, calibrate two models: DLSM and basic GWR.
+
+### Model: DLSM
+
+Firstly, we need to get a set of optimized bandwidth, each element for a dimension.
+
+```{r d2-gwdr-bw}
+#| cache: true
+
+d2_gwdr_bw <- gwdr.bandwidth.optimize(
+    formula = y ~ x1 + x2 + x3,
+    data = data_d2$data,
+    coords = data_d2$coords,
+    kernel.list = list(
+        gwdr.make.kernel(0.618, kernel = "gaussian", adaptive = T),
+        gwdr.make.kernel(0.618, kernel = "gaussian", adaptive = T)
+    ),
+    optimize.method = gwdr.bandwidth.optimize.aic
+)
+d2_gwdr_bw
+```
+
+Then, calibrate a GWDR model with this bandwidth set.
+
+```{r d2-gwdr-model}
+#| cache: true
+
+d2_gwdr <- gwdr(
+    formula = y ~ x1 + x2 + x3,
+    data = data_d2$data,
+    coords = data_d2$coords,
+    kernel.list = d2_gwdr_bw
+)
+d2_gwdr$diagnostic
+```
+
+### Model: GWR
+
+The GWR model for this data set can be calibrated with the following code.
+
+```{r d2-gwr-model}
+#| cache: true
+
+d2sp <- data_d2$data
+coordinates(d2sp) <- data_d2$coords
+d2_gwr_bw <- bw.gwr(
+    formula = y ~ x1 + x2 + x3,
+    data = d2sp,
+    adaptive = T,
+    approach = "AIC",
+    kernel = "gaussian",
+    longlat = F
+)
+d2_gwr <- gwr.basic(
+    formula = y ~ x1 + x2 + x3,
+    data = d2sp,
+    bw = d2_gwr_bw,
+    adaptive = T,
+    kernel = "gaussian",
+    longlat = F
+)
+d2_gwr
+```
+
+Whereas DLSM helps identify anisotropy, it is missing in estimates from a basic GWR model
+because the only bandwidth value optimized by GWR is 16 nearest neighbours (regardless of direction).
+
+### Analysis of Coefficient Estimates
+
+First, we look at the closeness between coefficient estimates and actual values.
+
+```{r}
+list(DLSM = d2_gwdr$betas, GWR = d2_gwr$SDF@data) %>%
+    map(~ select(.x, Intercept, x1, x2, x3)) %>%
+    map2_dfr(., names(.), function(model, model_name) {
+        map_dfr(c("Intercept", "x1", "x2", "x3"), ~ data.frame(
+            Estimated = model[[.x]],
+            Real = data_d2$beta[[.x]],
+            Coefficient = .x
+        ))
+    }, .id = "Model") %>%
+    ggplot(aes(x = Real, y = Estimated)) + geom_point() +
+    geom_abline(intercept = 0, slope = 1, color = "darkgreen") +
+    stat_poly_eq() + stat_poly_line() +
+    facet_grid(rows = vars(Model), cols = vars(Coefficient)) +
+    coord_fixed() + theme_bw()
+```
+
+Then, we look at the RMSE and MAE criterions.
+
+```{r}
+list(DLSM = d2_gwdr$betas, GWR = d2_gwr$SDF@data) %>%
+    map(~ select(.x, Intercept, x1, x2, x3)) %>%
+    map2_dfr(., names(.), function(model, model_name) {
+        map_dfr(c("Intercept", "x1", "x2", "x3"), ~ data.frame(
+            RMSE = sqrt(mean((data_d2$beta[[.x]] - model[[.x]])^2)),
+            MAE = mean(abs(data_d2$beta[[.x]] - model[[.x]])),
+            Coefficient = .x
+        ))
+    }, .id = "Model") %>%
+    map_dfr(c("RMSE", "MAE"), function(i, model) {
+        data.frame(Value = model[[i]],
+                   Indicator = i,
+                   Model = model$Model,
+                   Coefficient = model$Coefficient)
+    }, .) %>%
+    ggplot(aes(x = Coefficient, y = Value, fill = Model)) + 
+    geom_col(position = "dodge") +
+    geom_text(aes(y = Value + 0.02, label = sprintf("%.2f", Value)),
+              position = position_dodge(width = 1)) +
+    facet_grid(cols = vars(Indicator)) +
+    theme_bw() + theme(legend.position = "top")
+```
+
+### Local Polynomial Estimator
+
+Coefficient estimates for some points are significantly biased in both DLSM and GWR models.
+Now let us try the local polynomial kernel estimation method to demonstrate some of its features.
+We will calibrate a DLSM model with this kernel analyse coefficient estimates in a same way.
+
+```{r d2-gwdr-model-lp}
+#| cache: true
+
+d2_gwdr_lp_bw <- gwdr.bandwidth.optimize(
+    formula = y ~ x1 + x2 + x3,
+    data = data_d2$data,
+    coords = data_d2$coords,
+    kernel.list = list(
+        gwdr.make.kernel(0.618, kernel = "gaussian", adaptive = T),
+        gwdr.make.kernel(0.618, kernel = "gaussian", adaptive = T)
+    ),
+    optimize.method = gwdr.bandwidth.optimize.aic,
+    solver = "local.poly"
+)
+d2_gwdr_lp <- gwdr(
+    formula = y ~ x1 + x2 + x3,
+    data = data_d2$data,
+    coords = data_d2$coords,
+    kernel.list = d2_gwdr_lp_bw,
+    solver = "local.poly"
+)
+d2_gwdr$diagnostic
+```
+
+The following two figures show comparsion between estimates and real values.
+
+```{r}
+#| echo: false
+
+list(DLSM = d2_gwdr_lp$betas, GWR = d2_gwr$SDF@data) %>%
+    map(~ select(.x, Intercept, x1, x2, x3)) %>%
+    map2_dfr(., names(.), function(model, model_name) {
+        map_dfr(c("Intercept", "x1", "x2", "x3"), ~ data.frame(
+            Estimated = model[[.x]],
+            Real = data_d2$beta[[.x]],
+            Coefficient = .x
+        ))
+    }, .id = "Model") %>%
+    ggplot(aes(x = Real, y = Estimated)) + geom_point() +
+    geom_abline(intercept = 0, slope = 1, color = "darkgreen") +
+    stat_poly_eq() + stat_poly_line() +
+    facet_grid(rows = vars(Model), cols = vars(Coefficient)) +
+    coord_fixed() + theme_bw()
+
+list(DLSM = d2_gwdr_lp$betas, GWR = d2_gwr$SDF@data) %>%
+    map(~ select(.x, Intercept, x1, x2, x3)) %>%
+    map2_dfr(., names(.), function(model, model_name) {
+        map_dfr(c("Intercept", "x1", "x2", "x3"), ~ data.frame(
+            RMSE = sqrt(mean((data_d2$beta[[.x]] - model[[.x]])^2)),
+            MAE = mean(abs(data_d2$beta[[.x]] - model[[.x]])),
+            Coefficient = .x
+        ))
+    }, .id = "Model") %>%
+    map_dfr(c("RMSE", "MAE"), function(i, model) {
+        data.frame(Value = model[[i]],
+                   Indicator = i,
+                   Model = model$Model,
+                   Coefficient = model$Coefficient)
+    }, .) %>%
+    ggplot(aes(x = Coefficient, y = Value, fill = Model)) + 
+    geom_col(position = "dodge") +
+    geom_text(aes(y = Value + 0.02, label = sprintf("%.2f", Value)),
+              position = position_dodge(width = 1)) +
+    facet_grid(cols = vars(Indicator)) +
+    theme_bw() + theme(legend.position = "top")
+```
+
+Thus, the local polynomial estimator can significantly reduce estimation errors.
+And the boundary effects are also reduced.
