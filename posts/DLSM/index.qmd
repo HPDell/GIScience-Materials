@@ -3,6 +3,8 @@ title: "Introducing a General Framework for Locally Weighted Spatial Modelling B
 author: "Yigong Hu"
 date: "2023-03-22"
 bibliography: references.bib
+execute: 
+  cache: true
 ---
 
 In this document, I'm going to show codes of simulation experiments and their results demonstrated in the short paper
@@ -91,18 +93,25 @@ Usually, $0.618$ is good for adaptive bandwidths.
 In the following codes, the following packages are also required:
 
 - [**tidyverse**](https://cran.r-project.org/web/packages/tidyverse/index.html)
+- [**ggpubr**](https://cran.r-project.org/web/packages/ggpubr/index.html)
 - [**ggpmisc**](https://cran.r-project.org/web/packages/ggpmisc/index.html)
 - [**sf**]()(https://cran.r-project.org/web/packages/sf/index.html)
+- [**Metrics**]()(https://cran.r-project.org/web/packages/Metrics/index.html)
+- [**reshape2**]()(https://cran.r-project.org/web/packages/reshape2/index.html)
 
 Please install and load them too.
 
 ```{r}
 #| message: false
 #| warning: false
+
 library(GWmodel)
 library(tidyverse)
+library(ggpubr)
 library(ggpmisc)
 library(sf)
+library(Metrics)
+library(reshape2)
 ```
 
 We carried out three experiments, generating simulation data sets to demonstrate how DLSM works.
@@ -160,8 +169,6 @@ Then, calibrate two models: DLSM and basic GWR.
 Firstly, we need to get a set of optimized bandwidth, each element for a dimension.
 
 ```{r d2-gwdr-bw}
-#| cache: true
-
 d2_gwdr_bw <- gwdr.bandwidth.optimize(
     formula = y ~ x1 + x2 + x3,
     data = data_d2$data,
@@ -178,8 +185,6 @@ d2_gwdr_bw
 Then, calibrate a GWDR model with this bandwidth set.
 
 ```{r d2-gwdr-model}
-#| cache: true
-
 d2_gwdr <- gwdr(
     formula = y ~ x1 + x2 + x3,
     data = data_d2$data,
@@ -194,8 +199,6 @@ d2_gwdr$diagnostic
 The GWR model for this data set can be calibrated with the following code.
 
 ```{r d2-gwr-model}
-#| cache: true
-
 d2sp <- data_d2$data
 coordinates(d2sp) <- data_d2$coords
 d2_gwr_bw <- bw.gwr(
@@ -274,24 +277,11 @@ Now let us try the local polynomial kernel estimation method to demonstrate some
 We will calibrate a DLSM model with this kernel analyse coefficient estimates in a same way.
 
 ```{r d2-gwdr-model-lp}
-#| cache: true
-
-d2_gwdr_lp_bw <- gwdr.bandwidth.optimize(
-    formula = y ~ x1 + x2 + x3,
-    data = data_d2$data,
-    coords = data_d2$coords,
-    kernel.list = list(
-        gwdr.make.kernel(0.618, kernel = "gaussian", adaptive = T),
-        gwdr.make.kernel(0.618, kernel = "gaussian", adaptive = T)
-    ),
-    optimize.method = gwdr.bandwidth.optimize.aic,
-    solver = "local.poly"
-)
 d2_gwdr_lp <- gwdr(
     formula = y ~ x1 + x2 + x3,
     data = data_d2$data,
     coords = data_d2$coords,
-    kernel.list = d2_gwdr_lp_bw,
+    kernel.list = d2_gwdr_bw,
     solver = "local.poly"
 )
 d2_gwdr$diagnostic
@@ -313,7 +303,7 @@ list(DLSM = d2_gwdr_lp$betas, GWR = d2_gwr$SDF@data) %>%
     }, .id = "Model") %>%
     ggplot(aes(x = Real, y = Estimated)) + geom_point() +
     geom_abline(intercept = 0, slope = 1, color = "darkgreen") +
-    stat_poly_eq() + stat_poly_line() +
+    stat_poly_eq(use_label("adj.rr.label")) + stat_poly_line() +
     facet_grid(rows = vars(Model), cols = vars(Coefficient)) +
     coord_fixed() + theme_bw()
 
@@ -345,7 +335,7 @@ And the boundary effects are also reduced.
 
 ## Three-dimensional Data
 
-In most spatial modelling research, 3D data are usually referred to spatio-temporal data, i.e., data of geographical and temporal coordinates.
+In most spatial modelling research, 3D data are usually referred to spatio-temporal data, i.e., data of geographical and temporal coordinates $u,v,t$.
 For this type of data, there is a corresponding geographically and temporally weighted regression [GTWR, @HuangWu-2010a] model.
 In this experiment, we compare DLSM model with this method.
 
@@ -355,17 +345,25 @@ We created 4 sets of data through similar generation process introduced in the e
 named as `data-3d-i` where `i` is a value from 1 to 4.
 To access these data, please turn to [GitHub worktree page](https://github.com/HPDell/GIScience-Materials/tree/master/posts/DLSM/data).
 
+```{r d3-data}
+d3_data_list <- map(c(1:4), function(i) {
+    readRDS(sprintf("data/compare-gtwr-%d.rds", i))
+})
+```
+
+In the first two data sets, the time coordinates were generated from a normal distributed random variable, i.e., $t \sim N(1619694000, 604800^2)$.
+While in the latter two data sets, $t$ was generated from an arithmetic sequence with 1000 elements, a common different of 1, and a first item $t_0$ of $1619694000$.
+And the distribution of coefficients on $t$-axis follows autoregressive time series.
+
 ### Model: DLSM
 
 The DLSM model can be calibrated with the following codes:
 
-```{r}
-#| cache: true
+```{r d3-gwdr}
 #| message: false
-#| eval: false
 
 d3_gwdr_list <- map(c(1:4), function (i) {
-    d3_data <- readRDS(sprintf("compare-gtwr-%d", i))
+    d3_data <- d3_data_list[[i]]
     coords_range <- apply(d3_data$coord, 2, max) - apply(d3_data$coord, 2, min)
     kernel <- gwdr.bandwidth.optimize(
         formula = y ~ x1 + x2 + x3,
@@ -396,12 +394,75 @@ And this addin has much higher computing performance.
 Results are stored in the [GTWR results folder](https://github.com/HPDell/GIScience-Materials/tree/master/posts/DLSM/gtwr_results).
 We can load them with the following codes.
 
-```{r}
+```{r d3-gtwr}
 #| message: false
 
-d3_gtwr <- map(c(1:4), ~ st_read(file.path("gtwr_results", sprintf("compare-gtwr-%d-gtwr.shp", .x))))
+d3_gtwr_list <- map(c(1:4), function(i) {
+    st_read(file.path("gtwr_results", sprintf("compare-gtwr-%d-gtwr.shp", i)))
+})
 ```
 
 ### Analysis
 
 We analyse the performance of these two models based on coefficient estimates and actual values.
+
+```{r}
+d3_model_coef <- pmap(list(
+    DLSM = d3_gwdr_list,
+    GTWR = d3_gtwr_list,
+    Real = d3_data_list
+), function(DLSM, GTWR, Real) {
+    dlsm_coef_df <- select(DLSM$betas, Intercept, x1, x2, x3) %>%
+        map2_dfr(., names(.), ~ data.frame(
+            Model = "DLSM",
+            Coefficient = .y,
+            Estimate = .x,
+            Real = Real$beta[[.y]]
+        ))
+    gtwr_coef_df <- rename(GTWR, x1 = C1_x1, x2 = C2_x2, x3 = C3_x3) %>%
+        st_drop_geometry() %>%
+        select(Intercept, x1, x2, x3) %>%
+        map2_dfr(., names(.), ~ data.frame(
+            Model = "GTWR",
+            Coefficient = .y,
+            Estimate = .x,
+            Real = Real$beta[[.y]]
+        ))
+    rbind(dlsm_coef_df, gtwr_coef_df)
+})
+```
+
+```{r}
+#| message: false
+#| warning: false
+
+d3_model_coef %>%
+    map(function(item) {
+        scatter <- ggplot(item, aes(Real, Estimate)) +
+            geom_point() +
+            geom_abline(intercept = 0, slope = 1) +
+            geom_smooth(method = "lm") +
+            stat_poly_eq(use_label("adj.rr.label")) +
+            facet_grid(rows = vars(Coefficient), cols = vars(Model)) +
+            coord_fixed() + theme_bw()
+        bar <- item %>%
+            group_by(Coefficient, Model) %>%
+            summarise(RMSE = rmse(Real, Estimate), MAE = mae(Real, Estimate)) %>%
+            ungroup() %>%
+            melt(id.vars = c("Coefficient", "Model"), variable.name = "Indicator", value.name = "Value") %>%
+            ggplot(aes(Coefficient, Value, fill = Model)) +
+                geom_col(position = "dodge") +
+                geom_text(aes(label = sprintf("%.2f", Value)), size = 2,
+                        position = position_dodge(1), vjust = -0.5) +
+                facet_grid(rows = vars(Indicator)) +
+                theme_bw()
+        ggarrange(scatter, bar, nrow = 1)
+    }) %>%
+    walk2(., 1:4, function(fig, i) {
+        print(annotate_figure(fig, bottom = sprintf("Data set %d", i)))
+    })
+```
+
+According to the results, DLSM can reduce the mean of absolute estimation error by 10%-50%, especially when coefficients are temporally autocorrelated.
+The multiple bandwidths attach actual meaning to the parameters $\lambda,\mu$; they have a real-world correlate,
+unlike the root of sum of squared meters and seconds ($\sqrt{\mathrm{m}^2+\mathrm{s}^2}$).
