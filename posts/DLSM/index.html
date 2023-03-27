@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.2.475">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -85,6 +85,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -205,6 +224,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#analysis-of-coefficient-estimates" id="toc-analysis-of-coefficient-estimates" class="nav-link" data-scroll-target="#analysis-of-coefficient-estimates">Analysis of Coefficient Estimates</a></li>
   <li><a href="#local-polynomial-estimator" id="toc-local-polynomial-estimator" class="nav-link" data-scroll-target="#local-polynomial-estimator">Local Polynomial Estimator</a></li>
   </ul></li>
+  <li><a href="#three-dimensional-data" id="toc-three-dimensional-data" class="nav-link" data-scroll-target="#three-dimensional-data">Three-dimensional Data</a>
+  <ul class="collapse">
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#model-dlsm-1" id="toc-model-dlsm-1" class="nav-link" data-scroll-target="#model-dlsm-1">Model: DLSM</a></li>
+  <li><a href="#model-gtwr" id="toc-model-gtwr" class="nav-link" data-scroll-target="#model-gtwr">Model: GTWR</a></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -275,12 +301,14 @@ The name of favored density estimation method. By default, its <code>"kernel.smo
 <ul>
 <li><a href="https://cran.r-project.org/web/packages/tidyverse/index.html"><strong>tidyverse</strong></a></li>
 <li><a href="https://cran.r-project.org/web/packages/ggpmisc/index.html"><strong>ggpmisc</strong></a></li>
+<li><a href=""><strong>sf</strong></a>(https://cran.r-project.org/web/packages/sf/index.html)</li>
 </ul>
 <p>Please install and load them too.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GWmodel)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpmisc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpmisc)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We carried out three experiments, generating simulation data sets to demonstrate how DLSM works. We also calibrated a corresponding GWR-family model in each experiment to provide a comparison. In the experiments, based on the coefficient estimates we examine the proximity to their actual values by making scatter plot with regression lines and calculate their RMSE and MAE criterions defined by <span class="math display">\[
 \begin{aligned}
@@ -599,7 +627,7 @@ Adaptive bandwidth (number of nearest neighbours): 16 AICc value: 18980.64 </cod
 <pre><code>   ***********************************************************************
    *                       Package   GWmodel                             *
    ***********************************************************************
-   Program starts at: 2023-03-25 14:06:21 
+   Program starts at: 2023-03-27 11:42:00 
    Call:
    gwr.basic(formula = y ~ x1 + x2 + x3, data = d2sp, bw = d2_gwr_bw, 
     kernel = "gaussian", adaptive = T, longlat = F)
@@ -665,7 +693,7 @@ Adaptive bandwidth (number of nearest neighbours): 16 AICc value: 18980.64 </cod
    Adjusted R-square value:  0.9841614 
 
    ***********************************************************************
-   Program stops at: 2023-03-25 14:06:24 </code></pre>
+   Program stops at: 2023-03-27 11:42:04 </code></pre>
 </div>
 </div>
 <p>Whereas DLSM helps identify anisotropy, it is missing in estimates from a basic GWR model because the only bandwidth value optimized by GWR is 16 nearest neighbours (regardless of direction).</p>
@@ -914,13 +942,100 @@ $AICc
 </div>
 </div>
 <p>Thus, the local polynomial estimator can significantly reduce estimation errors. And the boundary effects are also reduced.</p>
+</section>
+</section>
+<section id="three-dimensional-data" class="level2">
+<h2 class="anchored" data-anchor-id="three-dimensional-data">Three-dimensional Data</h2>
+<p>In most spatial modelling research, 3D data are usually referred to spatio-temporal data, i.e., data of geographical and temporal coordinates. For this type of data, there is a corresponding geographically and temporally weighted regression <span class="citation" data-cites="HuangWu-2010a">(GTWR, <a href="#ref-HuangWu-2010a" role="doc-biblioref">Huang, Wu, and Barry 2010</a>)</span> model. In this experiment, we compare DLSM model with this method.</p>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data">Data</h3>
+<p>We created 4 sets of data through similar generation process introduced in the experiment on 2D data, named as <code>data-3d-i</code> where <code>i</code> is a value from 1 to 4. To access these data, please turn to <a href="https://github.com/HPDell/GIScience-Materials/tree/master/posts/DLSM/data">GitHub worktree page</a>.</p>
+</section>
+<section id="model-dlsm-1" class="level3">
+<h3 class="anchored" data-anchor-id="model-dlsm-1">Model: DLSM</h3>
+<p>The DLSM model can be calibrated with the following codes:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_e34fa09fba9c3a96025000774f0f5298">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>d3_gwdr_list <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>), <span class="cf">function</span> (i) {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    d3_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">sprintf</span>(<span class="st">"compare-gtwr-%d"</span>, i))</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    coords_range <span class="ot">&lt;-</span> <span class="fu">apply</span>(d3_data<span class="sc">$</span>coord, <span class="dv">2</span>, max) <span class="sc">-</span> <span class="fu">apply</span>(d3_data<span class="sc">$</span>coord, <span class="dv">2</span>, min)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    kernel <span class="ot">&lt;-</span> <span class="fu">gwdr.bandwidth.optimize</span>(</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">formula =</span> y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> d3_data<span class="sc">$</span>data,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">coords =</span> d3_data<span class="sc">$</span>coord,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">kernel.list =</span> <span class="fu">list</span>(</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>            <span class="fu">gwdr.make.kernel</span>(coords_range[<span class="dv">1</span>] <span class="sc">*</span> <span class="fl">0.618</span>, <span class="at">kernel =</span> <span class="st">"bisquare"</span>, <span class="at">adaptive =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>            <span class="fu">gwdr.make.kernel</span>(coords_range[<span class="dv">2</span>] <span class="sc">*</span> <span class="fl">0.618</span>, <span class="at">kernel =</span> <span class="st">"bisquare"</span>, <span class="at">adaptive =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>            <span class="fu">gwdr.make.kernel</span>(coords_range[<span class="dv">3</span>] <span class="sc">*</span> <span class="fl">0.618</span>, <span class="at">kernel =</span> <span class="st">"bisquare"</span>, <span class="at">adaptive =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gwdr</span>(</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">formula =</span> y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3,</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> d3_data<span class="sc">$</span>data,</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">coords =</span> d3_data<span class="sc">$</span>coord,</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">kernel.list =</span> kernel</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-gtwr" class="level3">
+<h3 class="anchored" data-anchor-id="model-gtwr">Model: GTWR</h3>
+<p>We used the “<a href="https://www.researchgate.net/publication/329518786_GTWR_ADDIN_Valid_till_Dec_31_2022">GTWR ADDIN</a>” for ArcMap <span class="citation" data-cites="gtwr-addin">(<a href="#ref-gtwr-addin" role="doc-biblioref">Huang and Wang 2020</a>)</span> to calibrate GTWR model for all the four data sets. This is because there is a key parameter <span class="math inline">\(\lambda\)</span> in GTWR mdoel which should be optimized according to data, just like the bandwidth. But <code>gtwr()</code> function in <strong>GWmodel</strong> package does not support this process. And this addin has much higher computing performance. Results are stored in the <a href="https://github.com/HPDell/GIScience-Materials/tree/master/posts/DLSM/gtwr_results">GTWR results folder</a>. We can load them with the following codes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>d3_gtwr <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>), <span class="sc">~</span> <span class="fu">st_read</span>(<span class="fu">file.path</span>(<span class="st">"gtwr_results"</span>, <span class="fu">sprintf</span>(<span class="st">"compare-gtwr-%d-gtwr.shp"</span>, .x))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `compare-gtwr-1-gtwr' from data source 
+  `/Users/yigong/Documents/GIScience-Materials/posts/DLSM/gtwr_results/compare-gtwr-1-gtwr.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 1000 features and 8 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 2672.301 ymin: 2695.423 xmax: 3369.969 ymax: 3310.724
+CRS:           NA
+Reading layer `compare-gtwr-2-gtwr' from data source 
+  `/Users/yigong/Documents/GIScience-Materials/posts/DLSM/gtwr_results/compare-gtwr-2-gtwr.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 1000 features and 8 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 2672.301 ymin: 2695.423 xmax: 3369.969 ymax: 3310.724
+CRS:           NA
+Reading layer `compare-gtwr-3-gtwr' from data source 
+  `/Users/yigong/Documents/GIScience-Materials/posts/DLSM/gtwr_results/compare-gtwr-3-gtwr.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 1000 features and 8 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 2672.301 ymin: 2695.423 xmax: 3369.969 ymax: 3310.724
+CRS:           NA
+Reading layer `compare-gtwr-4-gtwr' from data source 
+  `/Users/yigong/Documents/GIScience-Materials/posts/DLSM/gtwr_results/compare-gtwr-4-gtwr.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 1000 features and 8 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 2672.301 ymin: 2695.423 xmax: 3369.969 ymax: 3310.724
+CRS:           NA</code></pre>
+</div>
+</div>
+</section>
+<section id="analysis" class="level3">
+<h3 class="anchored" data-anchor-id="analysis">Analysis</h3>
+<p>We analyse the performance of these two models based on coefficient estimates and actual values.</p>
+
 
 
 </section>
 </section>
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-gtwr-addin" class="csl-entry" role="doc-biblioentry">
+Huang, Bo, and Jionghua Wang. 2020. <span>“GTWR ADDIN (Valid till Dec 31, 2022).”</span>
+</div>
+<div id="ref-HuangWu-2010a" class="csl-entry" role="doc-biblioentry">
+Huang, Bo, Bo Wu, and Michael Barry. 2010. <span>“Geographically and Temporally Weighted Regression for Modeling Spatio-Temporal Variation in House Prices.”</span> <em>International Journal of Geographical Information Science</em> 24 (3): 383–401. <a href="https://doi.org/10.1080/13658810802672469">https://doi.org/10.1080/13658810802672469</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

@@ -1,1 +1,1 @@
-Sitemap: https://HPDell.github.io/GIScienct-Materials/sitemap.xml
+Sitemap: https://github.com/HPDell/GIScience-Materials/sitemap.xml
