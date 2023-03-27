@@ -2,6 +2,7 @@
 title: "Introducing a General Framework for Locally Weighted Spatial Modelling Based on Density Regression"
 author: "Yigong Hu"
 date: "2023-03-22"
+bibliography: references.bib
 ---
 
 In this document, I'm going to show codes of simulation experiments and their results demonstrated in the short paper
@@ -91,6 +92,7 @@ In the following codes, the following packages are also required:
 
 - [**tidyverse**](https://cran.r-project.org/web/packages/tidyverse/index.html)
 - [**ggpmisc**](https://cran.r-project.org/web/packages/ggpmisc/index.html)
+- [**sf**]()(https://cran.r-project.org/web/packages/sf/index.html)
 
 Please install and load them too.
 
@@ -100,6 +102,7 @@ Please install and load them too.
 library(GWmodel)
 library(tidyverse)
 library(ggpmisc)
+library(sf)
 ```
 
 We carried out three experiments, generating simulation data sets to demonstrate how DLSM works.
@@ -339,3 +342,66 @@ list(DLSM = d2_gwdr_lp$betas, GWR = d2_gwr$SDF@data) %>%
 
 Thus, the local polynomial estimator can significantly reduce estimation errors.
 And the boundary effects are also reduced.
+
+## Three-dimensional Data
+
+In most spatial modelling research, 3D data are usually referred to spatio-temporal data, i.e., data of geographical and temporal coordinates.
+For this type of data, there is a corresponding geographically and temporally weighted regression [GTWR, @HuangWu-2010a] model.
+In this experiment, we compare DLSM model with this method.
+
+### Data
+
+We created 4 sets of data through similar generation process introduced in the experiment on 2D data,
+named as `data-3d-i` where `i` is a value from 1 to 4.
+To access these data, please turn to [GitHub worktree page](https://github.com/HPDell/GIScience-Materials/tree/master/posts/DLSM/data).
+
+### Model: DLSM
+
+The DLSM model can be calibrated with the following codes:
+
+```{r}
+#| cache: true
+#| message: false
+#| eval: false
+
+d3_gwdr_list <- map(c(1:4), function (i) {
+    d3_data <- readRDS(sprintf("compare-gtwr-%d", i))
+    coords_range <- apply(d3_data$coord, 2, max) - apply(d3_data$coord, 2, min)
+    kernel <- gwdr.bandwidth.optimize(
+        formula = y ~ x1 + x2 + x3,
+        data = d3_data$data,
+        coords = d3_data$coord,
+        kernel.list = list(
+            gwdr.make.kernel(coords_range[1] * 0.618, kernel = "bisquare", adaptive = FALSE),
+            gwdr.make.kernel(coords_range[2] * 0.618, kernel = "bisquare", adaptive = FALSE),
+            gwdr.make.kernel(coords_range[3] * 0.618, kernel = "bisquare", adaptive = FALSE)
+        )
+    )
+    gwdr(
+        formula = y ~ x1 + x2 + x3,
+        data = d3_data$data,
+        coords = d3_data$coord,
+        kernel.list = kernel
+    )
+})
+```
+
+### Model: GTWR
+
+We used the "[GTWR ADDIN](https://www.researchgate.net/publication/329518786_GTWR_ADDIN_Valid_till_Dec_31_2022)" for ArcMap [@gtwr-addin]
+to calibrate GTWR model for all the four data sets.
+This is because there is a key parameter $\lambda$ in GTWR mdoel which should be optimized according to data, just like the bandwidth.
+But `gtwr()` function in **GWmodel** package does not support this process.
+And this addin has much higher computing performance.
+Results are stored in the [GTWR results folder](https://github.com/HPDell/GIScience-Materials/tree/master/posts/DLSM/gtwr_results).
+We can load them with the following codes.
+
+```{r}
+#| message: false
+
+d3_gtwr <- map(c(1:4), ~ st_read(file.path("gtwr_results", sprintf("compare-gtwr-%d-gtwr.shp", .x))))
+```
+
+### Analysis
+
+We analyse the performance of these two models based on coefficient estimates and actual values.

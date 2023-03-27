@@ -1,0 +1,12 @@
+1,Bandwidth,0.114996,
+2,ResidualSquares,1305.69,
+3,Sigma,1.14267,
+4,AICc,3279.81,
+5,R2,0.772355,
+6,R2Adjusted,0.771669,
+7,Spatio-temporal Distance Ratio,0.268765,
+8,Trace_of_SMatrix,79.0408,
+9,Dependent Field,0,y
+10,Explanatory Field,1,x1
+11,Explanatory Field,2,x2
+12,Explanatory Field,3,x3
