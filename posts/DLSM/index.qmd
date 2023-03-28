@@ -95,9 +95,9 @@ In the following codes, the following packages are also required:
 - [**tidyverse**](https://cran.r-project.org/web/packages/tidyverse/index.html)
 - [**ggpubr**](https://cran.r-project.org/web/packages/ggpubr/index.html)
 - [**ggpmisc**](https://cran.r-project.org/web/packages/ggpmisc/index.html)
-- [**sf**]()(https://cran.r-project.org/web/packages/sf/index.html)
-- [**Metrics**]()(https://cran.r-project.org/web/packages/Metrics/index.html)
-- [**reshape2**]()(https://cran.r-project.org/web/packages/reshape2/index.html)
+- [**sf**](https://cran.r-project.org/web/packages/sf/index.html)
+- [**Metrics**](https://cran.r-project.org/web/packages/Metrics/index.html)
+- [**reshape2**](https://cran.r-project.org/web/packages/reshape2/index.html)
 
 Please install and load them too.
 
