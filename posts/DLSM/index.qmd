@@ -342,7 +342,7 @@ In this experiment, we compare DLSM model with this method.
 ### Data
 
 We created 4 sets of data through similar generation process introduced in the experiment on 2D data,
-named as `data-3d-i` where `i` is a value from 1 to 4.
+named as `compare-gtwr-i.rds` where `i` is a value from 1 to 4.
 To access these data, please turn to [GitHub worktree page](https://github.com/HPDell/GIScience-Materials/tree/master/posts/DLSM/data).
 
 ```{r d3-data}
