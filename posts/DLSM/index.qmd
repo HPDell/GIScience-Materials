@@ -542,7 +542,7 @@ d4_gwdr$diagnostic
 ### Model: GWR
 
 To calibrate a GWR model, we need to calculate the distance matrix first because `gwr.basic()` is not able to calculate distances for lines.
-Distance between two flows $\overrightarrow{O_iD_i}$ and $\overrightarrow{O_jD_j}$ are defined by
+Distance between two flows $\overrightarrow{O_iD_i}$ and $\overrightarrow{O_jD_j}$ are defined by @KordiFotheringham-2016a,
 $$
 d_{ij}=\sqrt{\frac{
     0.5 \times \left[ (O_{ix}-O_{jx})^2 + (O_{iy}-O_{jy})^2 \right] +
