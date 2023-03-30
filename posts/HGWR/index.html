@@ -85,6 +85,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -284,119 +303,64 @@ It accepts an integer or numeric number to specify the bandwidth used in geograp
 <h1>Simulation Experiment</h1>
 <p>To carry out the experiment, there are some packages required to be in your R environment. Please install them if they are abscent.</p>
 <ul>
-<li>tidyverse</li>
-<li>ggpmisc</li>
-<li>ggpubr</li>
-<li>Metrics</li>
-<li>sf</li>
-<li>MASS</li>
-<li>GWmodel</li>
-<li>lmerTest</li>
-<li>performance</li>
+<li><a href="https://cran.r-project.org/web/packages/tidyverse/index.html">tidyverse</a></li>
+<li><a href="https://cran.r-project.org/web/packages/ggpmisc/index.html">ggpmisc</a></li>
+<li><a href="https://cran.r-project.org/web/packages/ggpubr/index.html">ggpubr</a></li>
+<li><a href="https://cran.r-project.org/web/packages/Metrics/index.html">Metrics</a></li>
+<li><a href="https://cran.r-project.org/web/packages/sf/index.html">sf</a></li>
+<li><a href="https://cran.r-project.org/web/packages/MASS/index.html">MASS</a></li>
+<li><a href="https://cran.r-project.org/web/packages/GWmodel/index.html">GWmodel</a></li>
+<li><a href="https://cran.r-project.org/web/packages/lmerTest/index.html">lmerTest</a></li>
+<li><a href="https://cran.r-project.org/web/packages/performance/index.html">performance</a></li>
 </ul>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_08948a4834dc628b0052db15397a92c9">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.0     ✔ readr     2.1.4
-✔ forcats   1.0.0     ✔ stringr   1.5.0
-✔ ggplot2   3.4.1     ✔ tibble    3.1.8
-✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-✔ purrr     1.0.1     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Metrics)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Linking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hgwrr)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GWmodel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: maptools
-Loading required package: sp
-Checking rgeos availability: TRUE
-Please note that 'maptools' will be retired during 2023,
-plan transition at your earliest convenience;
-some functionality will be moved to 'sp'.
-Loading required package: robustbase
-Loading required package: Rcpp
-Loading required package: spatialreg
-Loading required package: spData
-To access larger datasets in this package, install the spDataLarge
-package with: `install.packages('spDataLarge',
-repos='https://nowosad.github.io/drat/', type='source')`
-Loading required package: Matrix
-
-Attaching package: 'Matrix'
-
-The following objects are masked from 'package:tidyr':
-
-    expand, pack, unpack
-
-Welcome to GWmodel version 2.2-9.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: lme4
-
-Attaching package: 'lmerTest'
-
-The following object is masked from 'package:lme4':
-
-    lmer
-
-The following object is masked from 'package:robustbase':
-
-    carrots
-
-The following object is masked from 'package:stats':
-
-    step</code></pre>
-</div>
+<p>The CRAN versions now are fine.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_ae4b1765f915dc84d6c55df9ff3f6377">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Metrics)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hgwrr)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GWmodel)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="data-generation" class="level2">
 <h2 class="anchored" data-anchor-id="data-generation">Data Generation</h2>
-<p>The data used in this experiment is generated by the following code.</p>
+<p>The data used in this experiment is generated by the following code. This process is inspired by <span class="citation" data-cites="FotheringhamYang-2017">Fotheringham, Yang, and Kang (<a href="#ref-FotheringhamYang-2017" role="doc-biblioref">2017</a>)</span>.</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-2_5dabf574d1ac70570a67b41657865240">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nu <span class="ot">&lt;-</span> <span class="dv">25</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>nv <span class="ot">&lt;-</span> <span class="dv">25</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>ncoords <span class="ot">&lt;-</span> nu <span class="sc">*</span> nv</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="fu">seq_len</span>(nu) <span class="sc">-</span> <span class="dv">1</span>, <span class="at">each =</span> <span class="dv">25</span>), <span class="fu">rep</span>(<span class="fu">seq_len</span>(nv) <span class="sc">-</span> <span class="dv">1</span>, <span class="at">times =</span> <span class="dv">25</span>)), <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(coords) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"u"</span>, <span class="st">"v"</span>)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> coords[[<span class="st">"u"</span>]]</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> coords[[<span class="st">"v"</span>]]</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> (<span class="dv">36</span> <span class="sc">-</span> (<span class="dv">6</span> <span class="sc">-</span> u<span class="sc">/</span><span class="dv">2</span>)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">*</span>(<span class="dv">36</span> <span class="sc">-</span> (<span class="dv">6</span> <span class="sc">-</span> v<span class="sc">/</span><span class="dv">2</span>)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">324</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span> (<span class="fu">scale</span>(u)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">scale</span>(v)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>h1 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">2</span>, <span class="at">times =</span> ncoords)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">648</span>)</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>z1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(ncoords, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="fl">0.5</span>)</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12574</span>)</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>b0 <span class="ot">&lt;-</span> (u <span class="sc">+</span> v) <span class="sc">/</span> <span class="dv">12</span> <span class="sc">-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fu">rnorm</span>(ncoords, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="fl">0.2</span>)</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>betas <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Intercept =</span> b0, g1, g2, h1, z1)</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">648</span>)</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>nsamples <span class="ot">&lt;-</span> <span class="fu">floor</span>(<span class="fu">runif</span>(ncoords, <span class="dv">20</span>, <span class="dv">50</span>))</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>iloc <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">seq_len</span>(ncoords), <span class="at">times =</span> nsamples)</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="fu">sum</span>(nsamples), <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="at">Sigma =</span> <span class="fu">diag</span>(<span class="dv">4</span>))</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>x[,<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(x[,<span class="dv">1</span>], <span class="at">by =</span> <span class="fu">list</span>(iloc), <span class="at">FUN =</span> mean)[[<span class="st">"x"</span>]] <span class="sc">%&gt;%</span> <span class="fu">rep</span>(<span class="at">times =</span> nsamples)</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>x[,<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(x[,<span class="dv">2</span>], <span class="at">by =</span> <span class="fu">list</span>(iloc), <span class="at">FUN =</span> mean)[[<span class="st">"x"</span>]] <span class="sc">%&gt;%</span> <span class="fu">rep</span>(<span class="at">times =</span> nsamples)</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(x) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"g1"</span>, <span class="st">"g2"</span>, <span class="st">"h1"</span>, <span class="st">"z1"</span>)</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">sum</span>(nsamples))</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(<span class="fu">cbind</span>(<span class="dv">1</span>, x) <span class="sc">*</span> <span class="fu">as.matrix</span>(betas[iloc,])) <span class="sc">+</span> e</span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">y =</span> y, x, <span class="at">group =</span> iloc) <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">betas =</span> betas,</span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">coords =</span> coords</span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>sim_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(<span class="fu">with</span>(sim, <span class="fu">cbind</span>(data, coords[data<span class="sc">$</span>group,])), <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"u"</span>, <span class="st">"v"</span>))</span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(sim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nu <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>nv <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ncoords <span class="ot">&lt;-</span> nu <span class="sc">*</span> nv</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="fu">seq_len</span>(nu) <span class="sc">-</span> <span class="dv">1</span>, <span class="at">each =</span> <span class="dv">25</span>), <span class="fu">rep</span>(<span class="fu">seq_len</span>(nv) <span class="sc">-</span> <span class="dv">1</span>, <span class="at">times =</span> <span class="dv">25</span>)), <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(coords) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"u"</span>, <span class="st">"v"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> coords[[<span class="st">"u"</span>]]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> coords[[<span class="st">"v"</span>]]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> (<span class="dv">36</span> <span class="sc">-</span> (<span class="dv">6</span> <span class="sc">-</span> u<span class="sc">/</span><span class="dv">2</span>)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">*</span>(<span class="dv">36</span> <span class="sc">-</span> (<span class="dv">6</span> <span class="sc">-</span> v<span class="sc">/</span><span class="dv">2</span>)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">324</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span> (<span class="fu">scale</span>(u)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">scale</span>(v)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>h1 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">2</span>, <span class="at">times =</span> ncoords)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">648</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>z1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(ncoords, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="fl">0.5</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12574</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>b0 <span class="ot">&lt;-</span> (u <span class="sc">+</span> v) <span class="sc">/</span> <span class="dv">12</span> <span class="sc">-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fu">rnorm</span>(ncoords, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="fl">0.2</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>betas <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Intercept =</span> b0, g1, g2, h1, z1)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">648</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>nsamples <span class="ot">&lt;-</span> <span class="fu">floor</span>(<span class="fu">runif</span>(ncoords, <span class="dv">20</span>, <span class="dv">50</span>))</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>iloc <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">seq_len</span>(ncoords), <span class="at">times =</span> nsamples)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(<span class="fu">sum</span>(nsamples), <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="at">Sigma =</span> <span class="fu">diag</span>(<span class="dv">4</span>))</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>x[,<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(x[,<span class="dv">1</span>], <span class="at">by =</span> <span class="fu">list</span>(iloc), <span class="at">FUN =</span> mean)[[<span class="st">"x"</span>]] <span class="sc">%&gt;%</span> <span class="fu">rep</span>(<span class="at">times =</span> nsamples)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>x[,<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(x[,<span class="dv">2</span>], <span class="at">by =</span> <span class="fu">list</span>(iloc), <span class="at">FUN =</span> mean)[[<span class="st">"x"</span>]] <span class="sc">%&gt;%</span> <span class="fu">rep</span>(<span class="at">times =</span> nsamples)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(x) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"g1"</span>, <span class="st">"g2"</span>, <span class="st">"h1"</span>, <span class="st">"z1"</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">sum</span>(nsamples))</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(<span class="fu">cbind</span>(<span class="dv">1</span>, x) <span class="sc">*</span> <span class="fu">as.matrix</span>(betas[iloc,])) <span class="sc">+</span> e</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">y =</span> y, x, <span class="at">group =</span> iloc) <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">betas =</span> betas,</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">coords =</span> coords</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>sim_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(<span class="fu">with</span>(sim, <span class="fu">cbind</span>(data, coords[data<span class="sc">$</span>group,])), <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"u"</span>, <span class="st">"v"</span>))</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(sim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 3
  $ data  :'data.frame': 21434 obs. of  6 variables:
@@ -417,7 +381,7 @@ The following object is masked from 'package:stats':
   ..$ v: num [1:625] 0 1 2 3 4 5 6 7 8 9 ...</code></pre>
 </div>
 </div>
-<p>With this data, we are going to calibrate a HGWR, GWR, and HLM models. The multiscale GWR (MGWR) requires a very large amout of memory and time, so we only demonstrate the workable codes here. The result we got on a high-performance computing platform is used instead.</p>
+<p>With this data, we are going to calibrate a HGWR model, geographically weighted regression <span class="citation" data-cites="BrunsdonFotheringham-1996">(GWR, <a href="#ref-BrunsdonFotheringham-1996" role="doc-biblioref">Brunsdon, Fotheringham, and Charlton 1996</a>)</span> model, multiscale geographically weighted regression <span class="citation" data-cites="LuBrunsdon-2017">(MGWR, the PSDM implementation, <a href="#ref-LuBrunsdon-2017" role="doc-biblioref">Lu et al. 2017</a>)</span> model, and hierarchical linear model <span class="citation" data-cites="Raudenbush-1993">(HLM, <a href="#ref-Raudenbush-1993" role="doc-biblioref">Raudenbush 1993</a>)</span>. The MGWR model requires a very large amout of memory and time, so we only demonstrate the workable codes here. The result we got on a high-performance computing platform is used instead.</p>
 </section>
 <section id="model-calibration" class="level2">
 <h2 class="anchored" data-anchor-id="model-calibration">Model Calibration</h2>
@@ -425,12 +389,12 @@ The following object is masked from 'package:stats':
 <h3 class="anchored" data-anchor-id="hgwr">HGWR</h3>
 <p>A HGWR model is calibrated with the following code.</p>
 <div class="cell" data-hash="index_cache/html/sim-hgwr-model_cdd7e88b5519f1bbfdcbd75bc238fcef">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>hgwr_formula <span class="ot">&lt;-</span> y <span class="sc">~</span> g1 <span class="sc">+</span> g2 <span class="sc">+</span> h1 <span class="sc">+</span> (z1 <span class="sc">|</span> group)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>hgwr_model <span class="ot">&lt;-</span> <span class="fu">hgwr</span>(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    hgwr_formula, sim<span class="sc">$</span>data, <span class="fu">c</span>(<span class="st">"g1"</span>, <span class="st">"g2"</span>), sim<span class="sc">$</span>coords, <span class="st">"CV"</span>, </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">kernel =</span> <span class="st">"bisquared"</span>,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(hgwr_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>hgwr_formula <span class="ot">&lt;-</span> y <span class="sc">~</span> g1 <span class="sc">+</span> g2 <span class="sc">+</span> h1 <span class="sc">+</span> (z1 <span class="sc">|</span> group)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>hgwr_model <span class="ot">&lt;-</span> <span class="fu">hgwr</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    hgwr_formula, sim<span class="sc">$</span>data, <span class="fu">c</span>(<span class="st">"g1"</span>, <span class="st">"g2"</span>), sim<span class="sc">$</span>coords, <span class="st">"CV"</span>, </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">kernel =</span> <span class="st">"bisquared"</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(hgwr_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Hierarchical and geographically weighted regression model
 =========================================================
@@ -458,9 +422,9 @@ Number of Obs: 21434
 <section id="gwr" class="level3">
 <h3 class="anchored" data-anchor-id="gwr">GWR</h3>
 <div class="cell" data-hash="index_cache/html/sim-gwr-model_dd6f6c4019ac997ab9d0037bca436e29">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>sim_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(sim_sf, <span class="at">Class =</span> <span class="st">"Spatial"</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>gwr_formula <span class="ot">&lt;-</span> y <span class="sc">~</span> g1 <span class="sc">+</span> g2 <span class="sc">+</span> h1 <span class="sc">+</span> z1</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>gwr_bw <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(gwr_formula, sim_sp, <span class="at">approach =</span> <span class="st">"AIC"</span>, <span class="at">adaptive =</span> T, <span class="at">kernel =</span> <span class="st">"bisquare"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sim_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(sim_sf, <span class="at">Class =</span> <span class="st">"Spatial"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>gwr_formula <span class="ot">&lt;-</span> y <span class="sc">~</span> g1 <span class="sc">+</span> g2 <span class="sc">+</span> h1 <span class="sc">+</span> z1</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>gwr_bw <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(gwr_formula, sim_sp, <span class="at">approach =</span> <span class="st">"AIC"</span>, <span class="at">adaptive =</span> T, <span class="at">kernel =</span> <span class="st">"bisquare"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Take a cup of tea and have a break, it will take a few minutes.
           -----A kind suggestion from GWmodel development group
@@ -484,8 +448,8 @@ Adaptive bandwidth (number of nearest neighbours): 238 AICc value: 63682.91
 Adaptive bandwidth (number of nearest neighbours): 235 AICc value: 63681.33 
 Adaptive bandwidth (number of nearest neighbours): 234 AICc value: 63681.33 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>gwr_model <span class="ot">&lt;-</span> <span class="fu">gwr.basic</span>(gwr_formula, sim_sp, <span class="at">bw =</span> gwr_bw, <span class="at">adaptive =</span> T, <span class="at">kernel =</span> <span class="st">"bisquare"</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>gwr_model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>gwr_model <span class="ot">&lt;-</span> <span class="fu">gwr.basic</span>(gwr_formula, sim_sp, <span class="at">bw =</span> gwr_bw, <span class="at">adaptive =</span> T, <span class="at">kernel =</span> <span class="st">"bisquare"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>gwr_model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ***********************************************************************
    *                       Package   GWmodel                             *
@@ -565,9 +529,9 @@ Adaptive bandwidth (number of nearest neighbours): 234 AICc value: 63681.33 </co
 <section id="hlm" class="level3">
 <h3 class="anchored" data-anchor-id="hlm">HLM</h3>
 <div class="cell" data-hash="index_cache/html/sim-hlm-model_58ff94dfeba8203e355a476b50ff1fe2">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>hlm_model <span class="ot">&lt;-</span> lmerTest<span class="sc">::</span><span class="fu">lmer</span>(y <span class="sc">~</span> g1 <span class="sc">+</span> g2 <span class="sc">+</span> h1 <span class="sc">+</span> z1 <span class="sc">+</span> (z1 <span class="sc">|</span> group), sim<span class="sc">$</span>data)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(hlm_model)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>performance<span class="sc">::</span><span class="fu">r2</span>(hlm_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>hlm_model <span class="ot">&lt;-</span> lmerTest<span class="sc">::</span><span class="fu">lmer</span>(y <span class="sc">~</span> g1 <span class="sc">+</span> g2 <span class="sc">+</span> h1 <span class="sc">+</span> z1 <span class="sc">+</span> (z1 <span class="sc">|</span> group), sim<span class="sc">$</span>data)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(hlm_model)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>performance<span class="sc">::</span><span class="fu">r2</span>(hlm_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -613,8 +577,8 @@ z1  0.007  0.001  0.000  0.002
 <section id="mgwr" class="level3">
 <h3 class="anchored" data-anchor-id="mgwr">MGWR</h3>
 <div class="cell" data-hash="index_cache/html/sim-mgwr-model_5f019d77398cec7b34c1866c24826fdc">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>mgwr_model <span class="ot">&lt;-</span> <span class="fu">gwr.multiscale</span>(y <span class="sc">~</span> g1 <span class="sc">+</span> g2 <span class="sc">+</span> h1 <span class="sc">+</span> z1, sim_sp, <span class="at">adaptive =</span> T)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>mgwr_model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mgwr_model <span class="ot">&lt;-</span> <span class="fu">gwr.multiscale</span>(y <span class="sc">~</span> g1 <span class="sc">+</span> g2 <span class="sc">+</span> h1 <span class="sc">+</span> z1, sim_sp, <span class="at">adaptive =</span> T)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>mgwr_model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="index_cache/html/sim-mgwr-model-load_989b8f285a324f2ffd4463befb11e3e5">
 <div class="cell-output cell-output-stdout">
@@ -660,98 +624,98 @@ z1  0.007  0.001  0.000  0.002
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-3_fe04ee99b62cd304fc6a0c10c39da710">
 <details>
 <summary>Create some handy variables.</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>coef_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Intercept"</span>, <span class="st">"g1"</span>, <span class="st">"g2"</span>, <span class="st">"h1"</span>, <span class="st">"z1"</span>)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>coef_names_plot <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Intercept"</span>, <span class="st">"g1"</span>, <span class="st">"g2"</span>, <span class="st">"z1"</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>coef_name_map <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Intercept =</span> <span class="st">"alpha[0]"</span>,</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">g1 =</span> <span class="st">"gamma[1]"</span>,</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">g2 =</span> <span class="st">"gamma[2]"</span>,</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">h1 =</span> <span class="st">"beta[1]"</span>,</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x1 =</span> <span class="st">"beta[1]"</span>,</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">z1 =</span> <span class="st">"mu[1]"</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>coef_name_labels <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Intercept =</span> <span class="fu">bquote</span>(alpha[<span class="dv">0</span>]),</span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">g1 =</span> <span class="fu">bquote</span>(gamma[<span class="dv">1</span>]),</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">g2 =</span> <span class="fu">bquote</span>(gamma[<span class="dv">2</span>]),</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">h1 =</span> <span class="fu">bquote</span>(beta[<span class="dv">1</span>]),</span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x1 =</span> <span class="fu">bquote</span>(beta[<span class="dv">1</span>]),</span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">z1 =</span> <span class="fu">bquote</span>(mu[<span class="dv">1</span>])</span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>models_name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"GWR"</span>, <span class="st">"MGWR"</span>, <span class="st">"HLM"</span>, <span class="st">"HGWR"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>coef_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Intercept"</span>, <span class="st">"g1"</span>, <span class="st">"g2"</span>, <span class="st">"h1"</span>, <span class="st">"z1"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>coef_names_plot <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Intercept"</span>, <span class="st">"g1"</span>, <span class="st">"g2"</span>, <span class="st">"z1"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>coef_name_map <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Intercept =</span> <span class="st">"alpha[0]"</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">g1 =</span> <span class="st">"gamma[1]"</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">g2 =</span> <span class="st">"gamma[2]"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">h1 =</span> <span class="st">"beta[1]"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x1 =</span> <span class="st">"beta[1]"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">z1 =</span> <span class="st">"mu[1]"</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>coef_name_labels <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Intercept =</span> <span class="fu">bquote</span>(alpha[<span class="dv">0</span>]),</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">g1 =</span> <span class="fu">bquote</span>(gamma[<span class="dv">1</span>]),</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">g2 =</span> <span class="fu">bquote</span>(gamma[<span class="dv">2</span>]),</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">h1 =</span> <span class="fu">bquote</span>(beta[<span class="dv">1</span>]),</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">x1 =</span> <span class="fu">bquote</span>(beta[<span class="dv">1</span>]),</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">z1 =</span> <span class="fu">bquote</span>(mu[<span class="dv">1</span>])</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>models_name <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"GWR"</span>, <span class="st">"MGWR"</span>, <span class="st">"HLM"</span>, <span class="st">"HGWR"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Firstly, we collect coefficient estimates.</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-4_534e27890df70aa89c1aeb9074140313">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Real values</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>beta0 <span class="ot">&lt;-</span> sim<span class="sc">$</span>betas[coef_names]</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="do">### HGWR</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>hgwr_betas <span class="ot">&lt;-</span> <span class="fu">coef</span>(hgwr_model)[coef_names]</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="do">### GWR</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>gwr_betas <span class="ot">&lt;-</span> gwr_model<span class="sc">$</span>SDF<span class="sc">@</span>data[coef_names] <span class="sc">%&gt;%</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aggregate</span>(<span class="at">by =</span> <span class="fu">list</span>(sim<span class="sc">$</span>data<span class="sc">$</span>group), <span class="at">FUN =</span> mean) <span class="sc">%&gt;%</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.tibble</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">all_of</span>(coef_names))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Real values</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>beta0 <span class="ot">&lt;-</span> sim<span class="sc">$</span>betas[coef_names]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="do">### HGWR</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>hgwr_betas <span class="ot">&lt;-</span> <span class="fu">coef</span>(hgwr_model)[coef_names]</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="do">### GWR</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>gwr_betas <span class="ot">&lt;-</span> gwr_model<span class="sc">$</span>SDF<span class="sc">@</span>data[coef_names] <span class="sc">%&gt;%</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aggregate</span>(<span class="at">by =</span> <span class="fu">list</span>(sim<span class="sc">$</span>data<span class="sc">$</span>group), <span class="at">FUN =</span> mean) <span class="sc">%&gt;%</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.tibble</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">all_of</span>(coef_names))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: `as.tibble()` was deprecated in tibble 2.0.0.
 ℹ Please use `as_tibble()` instead.
 ℹ The signature and semantics have changed, see `?as_tibble`.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="do">### MGWR</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>mgwr_betas <span class="ot">&lt;-</span> mgwr_model<span class="sc">$</span>SDF<span class="sc">@</span>data[coef_names] <span class="sc">%&gt;%</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aggregate</span>(<span class="at">by =</span> <span class="fu">list</span>(sim<span class="sc">$</span>data<span class="sc">$</span>group), <span class="at">FUN =</span> mean) <span class="sc">%&gt;%</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.tibble</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">all_of</span>(coef_names))</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="do">### HLM</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>hlm_betas <span class="ot">&lt;-</span> <span class="fu">coef</span>(hlm_model)<span class="sc">$</span>group</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(hlm_betas)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Intercept"</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>hlm_betas <span class="ot">&lt;-</span> hlm_betas[coef_names]</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>models_coef <span class="ot">&lt;-</span> <span class="fu">map</span>(models_name, <span class="sc">~</span> <span class="fu">get</span>(<span class="fu">paste0</span>(<span class="fu">tolower</span>(.x), <span class="st">"_betas"</span>)))</span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(models_coef) <span class="ot">&lt;-</span> models_name</span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>models_coef_real <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">list</span>(<span class="at">Real =</span> beta0), models_coef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="do">### MGWR</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>mgwr_betas <span class="ot">&lt;-</span> mgwr_model<span class="sc">$</span>SDF<span class="sc">@</span>data[coef_names] <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aggregate</span>(<span class="at">by =</span> <span class="fu">list</span>(sim<span class="sc">$</span>data<span class="sc">$</span>group), <span class="at">FUN =</span> mean) <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.tibble</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">all_of</span>(coef_names))</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="do">### HLM</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>hlm_betas <span class="ot">&lt;-</span> <span class="fu">coef</span>(hlm_model)<span class="sc">$</span>group</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(hlm_betas)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"Intercept"</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>hlm_betas <span class="ot">&lt;-</span> hlm_betas[coef_names]</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>models_coef <span class="ot">&lt;-</span> <span class="fu">map</span>(models_name, <span class="sc">~</span> <span class="fu">get</span>(<span class="fu">paste0</span>(<span class="fu">tolower</span>(.x), <span class="st">"_betas"</span>)))</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(models_coef) <span class="ot">&lt;-</span> models_name</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>models_coef_real <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">list</span>(<span class="at">Real =</span> beta0), models_coef)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then, plot estimate values at their location and the real values to see their distributions.</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-5_d9dc585788a997f5c286d393532ea7e3">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>models_coef_real <span class="sc">%&gt;%</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_dfr</span>(<span class="cf">function</span>(x) {</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(x, <span class="fu">all_of</span>(coef_names)) <span class="sc">%&gt;%</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">map_dfr</span>(<span class="sc">~</span> <span class="fu">data.frame</span>(<span class="at">Value =</span> .x, sim<span class="sc">$</span>coords), <span class="at">.id =</span> <span class="st">"Coefficient"</span>)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">.id =</span> <span class="st">"Algorithm"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Algorithm =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Algorithm), <span class="fu">names</span>(models_coef_real)),</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">Coefficient =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Coefficient), coef_names, </span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">labels =</span> coef_name_map[coef_names])) <span class="sc">%&gt;%</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(u, v, <span class="at">fill =</span> Value)) <span class="sc">+</span> <span class="fu">geom_raster</span>() <span class="sc">+</span> </span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>()) <span class="sc">+</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>()) <span class="sc">+</span></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_fill_gradient2</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="at">low =</span> <span class="st">"#000099"</span>, </span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">mid =</span> <span class="st">"#CCFF33"</span>, <span class="at">high =</span> <span class="st">"#CC0033"</span>,</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>                             <span class="at">midpoint =</span> <span class="dv">2</span>, <span class="at">oob =</span> scales<span class="sc">::</span>squish) <span class="sc">+</span></span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_grid</span>(<span class="at">rows =</span> <span class="fu">vars</span>(Algorithm), <span class="at">cols =</span> <span class="fu">vars</span>(Coefficient), <span class="at">labeller =</span> label_parsed) <span class="sc">+</span></span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">coord_fixed</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, <span class="at">legend.key.height =</span> <span class="fu">unit</span>(<span class="dv">10</span>, <span class="st">"pt"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>models_coef_real <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_dfr</span>(<span class="cf">function</span>(x) {</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(x, <span class="fu">all_of</span>(coef_names)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">map_dfr</span>(<span class="sc">~</span> <span class="fu">data.frame</span>(<span class="at">Value =</span> .x, sim<span class="sc">$</span>coords), <span class="at">.id =</span> <span class="st">"Coefficient"</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">.id =</span> <span class="st">"Algorithm"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Algorithm =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Algorithm), <span class="fu">names</span>(models_coef_real)),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">Coefficient =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Coefficient), coef_names, </span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">labels =</span> coef_name_map[coef_names])) <span class="sc">%&gt;%</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(u, v, <span class="at">fill =</span> Value)) <span class="sc">+</span> <span class="fu">geom_raster</span>() <span class="sc">+</span> </span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>()) <span class="sc">+</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>()) <span class="sc">+</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_fill_gradient2</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="at">low =</span> <span class="st">"#000099"</span>, </span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">mid =</span> <span class="st">"#CCFF33"</span>, <span class="at">high =</span> <span class="st">"#CC0033"</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>                             <span class="at">midpoint =</span> <span class="dv">2</span>, <span class="at">oob =</span> scales<span class="sc">::</span>squish) <span class="sc">+</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_grid</span>(<span class="at">rows =</span> <span class="fu">vars</span>(Algorithm), <span class="at">cols =</span> <span class="fu">vars</span>(Coefficient), <span class="at">labeller =</span> label_parsed) <span class="sc">+</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">coord_fixed</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, <span class="at">legend.key.height =</span> <span class="fu">unit</span>(<span class="dv">10</span>, <span class="st">"pt"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="960"></p>
 </div>
 </div>
 <p>A scatter plot along with it may be useful.</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-6_dac426593da5553d3b19c9f993de7188">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>beta_hat_real <span class="ot">&lt;-</span> models_coef <span class="sc">%&gt;%</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_dfr</span>(<span class="cf">function</span>(x) {</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map_dfr</span>(coef_names, <span class="sc">~</span> <span class="fu">data.frame</span>(<span class="at">Coefficient =</span> .x, <span class="at">Estimated =</span> x[[.x]], <span class="at">Real =</span> beta0[[.x]]))</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">.id =</span> <span class="st">"Algorithm"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Algorithm =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Algorithm), <span class="fu">names</span>(models_coef)),</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">Coefficient =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Coefficient), coef_names, <span class="at">labels =</span> coef_name_map[coef_names]))</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>beta_hat_rmse <span class="ot">&lt;-</span> beta_hat_real <span class="sc">%&gt;%</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_nest</span>(Algorithm, Coefficient) <span class="sc">%&gt;%</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">rmse =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((.x<span class="sc">$</span>Estimated <span class="sc">-</span> .x<span class="sc">$</span>Real)<span class="sc">^</span><span class="dv">2</span>))),</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> <span class="cn">NULL</span>)</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(beta_hat_real, <span class="fu">aes</span>(<span class="at">x =</span> Real, <span class="at">y =</span> Estimated)) <span class="sc">+</span></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"RMSE=%.3f"</span>, rmse)),</span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> beta_hat_rmse, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">10</span>), <span class="at">oob =</span> scales<span class="sc">::</span>squish) <span class="sc">+</span></span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_grid</span>(<span class="at">rows =</span> <span class="fu">vars</span>(Algorithm), <span class="at">cols =</span> <span class="fu">vars</span>(Coefficient), <span class="at">labeller =</span> label_parsed) <span class="sc">+</span></span>
-<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>beta_hat_real <span class="ot">&lt;-</span> models_coef <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_dfr</span>(<span class="cf">function</span>(x) {</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map_dfr</span>(coef_names, <span class="sc">~</span> <span class="fu">data.frame</span>(<span class="at">Coefficient =</span> .x, <span class="at">Estimated =</span> x[[.x]], <span class="at">Real =</span> beta0[[.x]]))</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">.id =</span> <span class="st">"Algorithm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Algorithm =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Algorithm), <span class="fu">names</span>(models_coef)),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">Coefficient =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Coefficient), coef_names, <span class="at">labels =</span> coef_name_map[coef_names]))</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>beta_hat_rmse <span class="ot">&lt;-</span> beta_hat_real <span class="sc">%&gt;%</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_nest</span>(Algorithm, Coefficient) <span class="sc">%&gt;%</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">rmse =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((.x<span class="sc">$</span>Estimated <span class="sc">-</span> .x<span class="sc">$</span>Real)<span class="sc">^</span><span class="dv">2</span>))),</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> <span class="cn">NULL</span>)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(beta_hat_real, <span class="fu">aes</span>(<span class="at">x =</span> Real, <span class="at">y =</span> Estimated)) <span class="sc">+</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"RMSE=%.3f"</span>, rmse)),</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> beta_hat_rmse, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">10</span>), <span class="at">oob =</span> scales<span class="sc">::</span>squish) <span class="sc">+</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_grid</span>(<span class="at">rows =</span> <span class="fu">vars</span>(Algorithm), <span class="at">cols =</span> <span class="fu">vars</span>(Coefficient), <span class="at">labeller =</span> label_parsed) <span class="sc">+</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="960"></p>
 </div>
@@ -774,19 +738,19 @@ z1  0.007  0.001  0.000  0.002
 \mathrm{AE}_i = \left| r_i - e_i \right|
 \]</span> where <span class="math inline">\(r_i\)</span> reprsents the real value at sample <span class="math inline">\(i\)</span>, and <span class="math inline">\(e_i\)</span> represents the corresponding estimate.</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-7_6a16084268636c6384dee12772a8f684">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>models_coef <span class="sc">%&gt;%</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">select</span>(.x, <span class="fu">all_of</span>(coef_names))) <span class="sc">%&gt;%</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_dfr</span>(<span class="cf">function</span>(x) {</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map2_dfr</span>(x, <span class="fu">names</span>(x), <span class="sc">~</span> <span class="fu">data.frame</span>(<span class="at">ae =</span> <span class="fu">ae</span>(beta0[[.y]], .x)), <span class="at">.id =</span> <span class="st">"Coefficient"</span>)</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">.id =</span> <span class="st">"Algorithm"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Algorithm =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Algorithm), <span class="fu">names</span>(models_coef)),</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">Coefficient =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Coefficient), coef_names)) <span class="sc">%&gt;%</span></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(Coefficient, Algorithm) <span class="sc">%&gt;%</span></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Coefficient, <span class="at">y =</span> ae, <span class="at">fill =</span> Algorithm)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_y_log10</span>(<span class="at">name =</span> <span class="st">'Squared Error'</span>, <span class="at">labels =</span> <span class="sc">~</span> <span class="fu">sprintf</span>(<span class="st">"%g"</span>, .x)) <span class="sc">+</span></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> coef_name_labels[coef_names]) <span class="sc">+</span></span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>, <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>models_coef <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">select</span>(.x, <span class="fu">all_of</span>(coef_names))) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_dfr</span>(<span class="cf">function</span>(x) {</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map2_dfr</span>(x, <span class="fu">names</span>(x), <span class="sc">~</span> <span class="fu">data.frame</span>(<span class="at">ae =</span> <span class="fu">ae</span>(beta0[[.y]], .x)), <span class="at">.id =</span> <span class="st">"Coefficient"</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">.id =</span> <span class="st">"Algorithm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Algorithm =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Algorithm), <span class="fu">names</span>(models_coef)),</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">Coefficient =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Coefficient), coef_names)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(Coefficient, Algorithm) <span class="sc">%&gt;%</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Coefficient, <span class="at">y =</span> ae, <span class="at">fill =</span> Algorithm)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_y_log10</span>(<span class="at">name =</span> <span class="st">'Squared Error'</span>, <span class="at">labels =</span> <span class="sc">~</span> <span class="fu">sprintf</span>(<span class="st">"%g"</span>, .x)) <span class="sc">+</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> coef_name_labels[coef_names]) <span class="sc">+</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>, <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -795,20 +759,20 @@ z1  0.007  0.001  0.000  0.002
 \mathrm{RMSE} = \sum_{i=1}^n \left(r_1-e_i\right)^2
 \]</span> where <span class="math inline">\(r_i\)</span> reprsents the real value at sample <span class="math inline">\(i\)</span>, and <span class="math inline">\(e_i\)</span> represents the corresponding estimate.</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-8_f08303866a8148e927e577ae28d05942">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>models_coef <span class="sc">%&gt;%</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_dfr</span>(<span class="cf">function</span> (alg) {</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map_dfr</span>(coef_names, <span class="cf">function</span> (coef, real) {</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>            est_rmse <span class="ot">&lt;-</span> <span class="fu">rmse</span>(real[[coef]], alg[[coef]])</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">data.frame</span>(<span class="at">Coefficient =</span> coef, <span class="at">Value =</span> est_rmse)</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>        }, beta0)</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">.id =</span> <span class="st">"Algorithm"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Algorithm =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Algorithm), <span class="fu">c</span>(<span class="st">"GWR"</span>, <span class="st">"MGWR"</span>, <span class="st">"HLM"</span>, <span class="st">"HGWR"</span>)),</span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">Coefficient =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Coefficient), coef_names)) <span class="sc">%&gt;%</span></span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Coefficient, <span class="at">y =</span> Value, <span class="at">fill =</span> Algorithm)) <span class="sc">+</span> </span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">'identity'</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>()) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"RMSE"</span>) <span class="sc">+</span></span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.6</span>), <span class="at">oob =</span> scales<span class="sc">::</span>squish, <span class="at">expand =</span> <span class="fu">expansion</span>()) <span class="sc">+</span></span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> coef_name_labels[coef_names]) <span class="sc">+</span></span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>models_coef <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_dfr</span>(<span class="cf">function</span> (alg) {</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map_dfr</span>(coef_names, <span class="cf">function</span> (coef, real) {</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>            est_rmse <span class="ot">&lt;-</span> <span class="fu">rmse</span>(real[[coef]], alg[[coef]])</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">data.frame</span>(<span class="at">Coefficient =</span> coef, <span class="at">Value =</span> est_rmse)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        }, beta0)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    }, <span class="at">.id =</span> <span class="st">"Algorithm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Algorithm =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Algorithm), <span class="fu">c</span>(<span class="st">"GWR"</span>, <span class="st">"MGWR"</span>, <span class="st">"HLM"</span>, <span class="st">"HGWR"</span>)),</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">Coefficient =</span> <span class="fu">ordered</span>(<span class="fu">as.factor</span>(Coefficient), coef_names)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Coefficient, <span class="at">y =</span> Value, <span class="at">fill =</span> Algorithm)) <span class="sc">+</span> </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">'identity'</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>()) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"RMSE"</span>) <span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.6</span>), <span class="at">oob =</span> scales<span class="sc">::</span>squish, <span class="at">expand =</span> <span class="fu">expansion</span>()) <span class="sc">+</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> coef_name_labels[coef_names]) <span class="sc">+</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -821,9 +785,23 @@ z1  0.007  0.001  0.000  0.002
 <p>In this post we introduced how to calibrate an HGWR model using R package <strong>hgwrr</strong>. It is demonstrated that HGWR could properly estimate local fixed effects, global fixed effects, and random effects simultaneously. HGWR could usually successfully distinguish local fixed effects from other effect types. For local fixed effects, spatial heterogeneity is considered as with GWR; moreover, global fixed effects and random effects are estimated as accurately as when using HLM. Thus, HGWR can be regarded as a successful combination of GWR and HLM.</p>
 
 
+
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-BrunsdonFotheringham-1996" class="csl-entry" role="doc-biblioentry">
+Brunsdon, Chris, A. Stewart Fotheringham, and Martin E. Charlton. 1996. <span>“Geographically <span>Weighted Regression</span>: <span>A Method</span> for <span>Exploring Spatial Nonstationarity</span>.”</span> <em>Geographical Analysis</em> 28 (4): 281–98. <a href="https://doi.org/10.1111/j.1538-4632.1996.tb00936.x">https://doi.org/10.1111/j.1538-4632.1996.tb00936.x</a>.
+</div>
+<div id="ref-FotheringhamYang-2017" class="csl-entry" role="doc-biblioentry">
+Fotheringham, A. Stewart, Wenbai Yang, and Wei Kang. 2017. <span>“Multiscale <span>Geographically Weighted Regression</span> (<span>MGWR</span>).”</span> <em>Annals of the American Association of Geographers</em> 107 (6): 1247–65. <a href="https://doi.org/10.1080/24694452.2017.1352480">https://doi.org/10.1080/24694452.2017.1352480</a>.
+</div>
+<div id="ref-LuBrunsdon-2017" class="csl-entry" role="doc-biblioentry">
+Lu, Binbin, Chris Brunsdon, Martin Charlton, and Paul Harris. 2017. <span>“Geographically Weighted Regression with Parameter-Specific Distance Metrics.”</span> <em>International Journal of Geographical Information Science</em> 31 (5): 982–98. <a href="https://doi.org/10.1080/13658816.2016.1263731">https://doi.org/10.1080/13658816.2016.1263731</a>.
+</div>
+<div id="ref-Raudenbush-1993" class="csl-entry" role="doc-biblioentry">
+Raudenbush, Stephen W. 1993. <span>“Hierarchical <span>Linear Models</span> and <span>Experimental Design</span>.”</span> In <em>Applied Analysis of Variance in Behavioral Science</em>, 459–96. <span>L. K. Edwards</span>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
