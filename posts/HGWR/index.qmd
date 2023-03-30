@@ -399,7 +399,7 @@ models_coef %>%
 
 And the following code generate a bar-plot showing root mean squared errors $\mathrm{RMSE}$ of each coefficient, which is
 $$
-\mathrm{RMSE} = \sum_{i=1}^n \left(r_1-e_i\right)^2
+\mathrm{RMSE} = \sum_{i=1}^n \left(r_i-e_i\right)^2
 $$
 where $r_i$ reprsents the real value at sample $i$, and $e_i$ represents the corresponding estimate.
 

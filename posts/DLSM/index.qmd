@@ -121,8 +121,8 @@ In the experiments, based on the coefficient estimates we examine the proximity 
 by making scatter plot with regression lines and calculate their RMSE and MAE criterions defined by
 $$
 \begin{aligned}
-\mathrm{RMSE} &= \sum_{i=1}^n \left(r_1-e_i\right)^2 \\
-\mathrm{MAE} &= \sum_{i=1}^n \left|r_1-e_i\right|
+\mathrm{RMSE} &= \sum_{i=1}^n \left(r_i-e_i\right)^2 \\
+\mathrm{MAE} &= \sum_{i=1}^n \left|r_i-e_i\right|
 \end{aligned}
 $$
 where $n$ is the number of estimates, $e_i$ is the $i$-th estimate, and $r_i$ is the corresponding real value.
