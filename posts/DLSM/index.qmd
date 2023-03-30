@@ -2,6 +2,7 @@
 title: "Introducing a General Framework for Locally Weighted Spatial Modelling Based on Density Regression"
 author: "Yigong Hu"
 date: "2023-03-22"
+image: GWDR.png
 bibliography: references.bib
 execute: 
   cache: true
